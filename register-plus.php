@@ -98,6 +98,7 @@ if( !class_exists('RegisterPlusPlugin') ){
 								'good'					=> 'Good Password',
 								'strong'				=> 'Strong Password',
 								'code' 					=> '0', 
+                                                                'code_onetime'                          => '0',
 								'codepass' 				=> array('0'),
 								'captcha' 				=> '0',
 								'disclaimer'			=> '0',
@@ -158,11 +159,14 @@ if( !class_exists('RegisterPlusPlugin') ){
 			  	$default['code'] = get_option("regplus_code");
 			if( get_option("regplus_codepass") )
 			  	$default['codepass'] = get_option("regplus_codepass");
+                        if( get_option("regplus_code_onetime"))
+                                $default['code_onetime'] = get_option("regplus_code_onetime");
 			if( get_option("regplus_captcha") )
 			  	$default['captcha'] = get_option("regplus_captcha");
 			#Delete Previous Saved Items
 			delete_option('regplus_password');
 			delete_option('regplus_code');
+			delete_option('regplus_code_onetime');
 			delete_option('regplus_codepass');
 			delete_option('regplus_captcha');
 			#Set Default Settings
@@ -196,6 +200,7 @@ if( !class_exists('RegisterPlusPlugin') ){
 					$update["codepass"][$k] = strtolower($v);
 				}
 				$update["code_req"] = $_POST['regplus_code_req'];
+				$update["code_onetime"] = $_POST['regplus_code_onetime'];
 			}
 			$update["captcha"] = $_POST['regplus_captcha'];
 			$update["disclaimer"] = $_POST['regplus_disclaimer'];
@@ -701,6 +706,7 @@ jQuery(document).ready(function() {
                                     <div id="codepass">
                                     <label><input type="checkbox" name="regplus_dash_widget" value="1" <?php if( $regplus['dash_widget'] ) echo 'checked="checked"'; ?>  /> <?php _e('Enable Invitation Tracking Dashboard Widget', 'regplus');?></label><br />
                                     <label><input type="checkbox" name="regplus_code_req" id="code_req" value="1" <?php if( $regplus['code_req'] ) echo 'checked="checked"';?> /> <?php _e('Require Invitation Code to Register', 'regplus');?></label>
+                                    <label><input type="checkbox" name="regplus_code_onetime" id="code_onetime" value="1" <?php if( $regplus['code_onetime'] ) echo 'checked="checked"';?> /> <?php _e('Codes may only be used once', 'regplus');?></label>
                               <?php if( $codes ){ echo $codes; } else { ?>
                                     <div class="code_block">
                                     <input type="text" name="regplus_codepass[]"  value="<?php echo $regplus['codepass'];?>" /> &nbsp;
@@ -1047,7 +1053,11 @@ jQuery(document).ready(function() {
 					$errors->add('empty_regcode', __('<strong>ERROR</strong>: Please enter the Invitation Code.', 'regplus'));
 				}elseif( !in_array(strtolower($_POST['regcode']), $regplus['codepass']) ){
 					$errors->add('regcode_mismatch', __('<strong>ERROR</strong>: Your Invitation Code is incorrect.', 'regplus'));
-				}
+                                }elseif( $regplus['code_onetime'] ){
+                                        $update = get_option( 'register_plus' );
+                                        $update["codepass"] = array_diff($regplus['codepass'],array(strtolower($_POST['regcode'])));
+                                        update_option( 'register_plus', $update );
+                                }
 			}
 			
 			if ( $regplus['captcha'] == 1 ){
