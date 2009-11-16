@@ -1053,12 +1053,8 @@ jQuery(document).ready(function() {
 					$errors->add('empty_regcode', __('<strong>ERROR</strong>: Please enter the Invitation Code.', 'regplus'));
 				}elseif( !in_array(strtolower($_POST['regcode']), $regplus['codepass']) ){
 					$errors->add('regcode_mismatch', __('<strong>ERROR</strong>: Your Invitation Code is incorrect.', 'regplus'));
-                                }elseif( $regplus['code_onetime'] ){
-                                        $update = get_option( 'register_plus' );
-                                        $update["codepass"] = array_diff($regplus['codepass'],array(strtolower($_POST['regcode'])));
-                                        update_option( 'register_plus', $update );
                                 }
-			}
+                        }
 			
 			if ( $regplus['captcha'] == 1 ){
 				
@@ -1098,6 +1094,12 @@ jQuery(document).ready(function() {
 				  	$errors->add('privacy', __('<strong>ERROR</strong>: Please accept the ', 'regplus') . stripslashes( $regplus['privacy_title'] ) . '.');
 				}	
 			}
+
+                        if ( $errors->get_error_code() && $regplus['code_onetime'] ){
+                                        $update = get_option( 'register_plus' );
+                                        $update["codepass"] = array_diff($regplus['codepass'],array(strtolower($_POST['regcode'])));
+                                        update_option( 'register_plus', $update );
+                                }
 			
 			return $errors;
 		}	
