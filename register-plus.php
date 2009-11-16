@@ -1095,7 +1095,7 @@ jQuery(document).ready(function() {
 				}	
 			}
 
-                        if ( $errors->get_error_code() && $regplus['code_onetime'] ){
+                        if ( !$errors->get_error_code() && $regplus['code_onetime'] ){
                                         $update = get_option( 'register_plus' );
                                         $update["codepass"] = array_diff($regplus['codepass'],array(strtolower($_POST['regcode'])));
                                         update_option( 'register_plus', $update );
