@@ -4,7 +4,7 @@ Plugin Name: Register Plus
 Plugin URI: http://skullbit.com/wordpress-plugin/register-plus/
 Description: <strong>WordPress 2.5+ ONLY.</strong> Enhance your Registration Page.  Add Custom Logo, Password Field, Invitation Codes, Disclaimer, Captcha Validation, Email Validation, User Moderation, Profile Fields and more.
 Author: Skullbit
-Version: 3.5.1
+Version: 3.5.1+onetimecodes
 Author URI: http://www.skullbit.com
 
 LOCALIZATION
